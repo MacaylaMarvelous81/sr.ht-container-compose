@@ -12,6 +12,4 @@ Then sr.ht can be built and started:
 Any changes to the sr.ht sources will rebuild and reload sr.ht containers as
 needed.
 
-To create an admin account:
-
-    docker compose exec meta.sr.ht metasrht-manageuser -t admin -e <email> root
+A default admin "root" is created, with password "root".
