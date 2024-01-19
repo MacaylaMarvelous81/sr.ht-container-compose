@@ -7,9 +7,6 @@ x-sr.ht-service: &srht-service
       target: /etc/sr.ht/pgp/pubkey.asc
     - source: sr.ht-pgp-privkey
       target: /etc/sr.ht/pgp/privkey.asc
-  # TODO: drop this workaround for apk
-  build:
-    network: host
 
 configs:
   sr.ht-config:
@@ -24,15 +21,26 @@ services:
     <<: *srht-service
     build:
       target: meta.sr.ht
+      network: host # TODO: drop this workaround
+    develop:
+      watch:
+        - path: meta.sr.ht/api
+          action: rebuild
     ports:
       - "5100:5100"
-    command: metasrht-api
+    command: /src/meta.sr.ht/api/api
   meta.sr.ht:
     <<: *srht-service
     build:
       target: meta.sr.ht
+      network: host # TODO: drop this workaround
+    develop:
+      watch:
+        - path: meta.sr.ht/metasrht
+          action: sync
+          target: /src/meta.sr.ht/metasrht
     depends_on:
       - meta.sr.ht-api
     ports:
       - "5000:5000"
-    command: flask --app metasrht.app:app run
+    command: flask --app metasrht.app:app --debug run
