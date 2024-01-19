@@ -34,7 +34,6 @@ services:
     <<: *srht-service
     build:
       target: meta.sr.ht
-      network: host # TODO: drop this workaround
     develop:
       watch:
         - path: meta.sr.ht/api
@@ -49,7 +48,6 @@ services:
     <<: *srht-service
     build:
       target: meta.sr.ht
-      network: host # TODO: drop this workaround
     develop:
       watch:
         - path: meta.sr.ht/metasrht
