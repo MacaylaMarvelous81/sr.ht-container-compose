@@ -30,6 +30,7 @@ services:
       - "postgres-data:/var/lib/postgresql/data"
       - "./init-postgres.sh:/docker-entrypoint-initdb.d/init.sh"
       - "./meta.sr.ht/schema.sql:/data/meta.sr.ht.sql"
+      - "./todo.sr.ht/schema.sql:/data/todo.sr.ht.sql"
   meta-api:
     <<: *srht-service
     build:
@@ -59,4 +60,37 @@ services:
       - meta-api
     ports:
       - "5000:5000"
-    command: flask --app metasrht.app:app --debug run --host=0.0.0.0
+    command: flask --app metasrht.app:app --debug run --host=0.0.0.0 --port=5000
+  todo-api:
+    <<: *srht-service
+    build:
+      target: todo.sr.ht
+    depends_on:
+      - redis
+      - postgres
+    develop:
+      watch:
+        - path: todo.sr.ht/api
+          action: rebuild
+    ports:
+      - "5103:5103"
+    command: /src/todo.sr.ht/api/api
+  todo:
+    <<: *srht-service
+    build:
+      target: todo.sr.ht
+    develop:
+      watch:
+        - path: todo.sr.ht/todosrht
+          action: sync
+          target: /src/todo.sr.ht/todosrht
+    depends_on:
+      - redis
+      - postgres
+      - todo-api
+    ports:
+      - "5003:5003"
+    # TODO: todo needs to communicate with meta's OAuth server, socat is a workaround
+    command: sh -c "
+      socat TCP4-LISTEN:5000 TCP4:meta:5000,forever &
+      flask --app todosrht.app:app --debug run --host=0.0.0.0 --port=5003"
