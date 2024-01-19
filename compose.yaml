@@ -1,5 +1,4 @@
 x-sr.ht-service: &srht-service
-  network_mode: host
   configs:
     - source: sr.ht-config
       target: /etc/sr.ht/config.ini
@@ -16,7 +15,21 @@ configs:
   sr.ht-pgp-privkey:
     file: pgp-privkey.asc
 
+volumes:
+  postgres-data:
+
 services:
+  redis:
+    image: "redis:alpine"
+  postgres:
+    image: "postgres:alpine"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - "postgres-data:/var/lib/postgresql/data"
+      - "./init-postgres.sh:/docker-entrypoint-initdb.d/init.sh"
+      - "./meta.sr.ht/schema.sql:/data/meta.sr.ht.sql"
   meta.sr.ht-api:
     <<: *srht-service
     build:
@@ -26,6 +39,9 @@ services:
       watch:
         - path: meta.sr.ht/api
           action: rebuild
+    depends_on:
+      - redis
+      - postgres
     ports:
       - "5100:5100"
     command: /src/meta.sr.ht/api/api
@@ -40,7 +56,9 @@ services:
           action: sync
           target: /src/meta.sr.ht/metasrht
     depends_on:
+      - redis
+      - postgres
       - meta.sr.ht-api
     ports:
       - "5000:5000"
-    command: flask --app metasrht.app:app --debug run
+    command: flask --app metasrht.app:app --debug run --host=0.0.0.0

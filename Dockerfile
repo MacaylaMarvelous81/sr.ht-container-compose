@@ -19,3 +19,4 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 FROM sr.ht as meta.sr.ht
 RUN apk add meta.sr.ht
 COPY --from=meta.sr.ht-build /src/meta.sr.ht /src/meta.sr.ht
+ENV PATH="${PATH}:/src/meta.sr.ht"
