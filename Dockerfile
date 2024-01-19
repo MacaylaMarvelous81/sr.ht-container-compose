@@ -3,6 +3,7 @@ RUN apk add curl socat
 RUN echo "https://mirror.sr.ht/alpine/v3.17/sr.ht" >>/etc/apk/repositories
 RUN curl -o /etc/apk/keys/alpine@sr.ht.rsa.pub 'https://mirror.sr.ht/alpine/alpine%40sr.ht.rsa.pub'
 RUN apk update
+RUN apk add py3-srht
 ADD core.sr.ht /src/core.sr.ht/
 ENV SRHT_PATH=/src/core.sr.ht/srht
 ENV PYTHONPATH=/src/core.sr.ht
