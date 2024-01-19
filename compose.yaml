@@ -11,9 +11,9 @@ configs:
   sr.ht-config:
     file: config.ini
   sr.ht-pgp-pubkey:
-    file: pgp-pubkey.asc
+    file: pgp/pubkey.asc
   sr.ht-pgp-privkey:
-    file: pgp-privkey.asc
+    file: pgp/privkey.asc
 
 volumes:
   postgres-data:

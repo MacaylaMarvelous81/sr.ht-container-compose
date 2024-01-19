@@ -7,6 +7,7 @@
 
 password='$2b$12$mlcAuUeU5reidsdPcZm/kOR4EWkZE2lbMvyVSHLpDuzDtm6MGn0Ne'
 client_secret='3eeeef2fd9d1e0176a50ee76d3382f7211231b832852bdfc3569a3bb5512158a19b1262b73ea735059004fd3ded53303e42f605e68ccbc9d3af84a373331aa9d'
+
 createdb meta.sr.ht
 psql -d meta.sr.ht </data/meta.sr.ht.sql
 psql -d meta.sr.ht <<EOF
