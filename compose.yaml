@@ -94,5 +94,5 @@ services:
       - "5003:5003"
     # TODO: todo needs to communicate with meta's OAuth server, socat is a workaround
     command: sh -c "
-      socat TCP4-LISTEN:5000 TCP4:meta:5000,forever &
+      socat -d TCP4-LISTEN:5000,fork TCP4:meta:5000,forever &
       flask --app todosrht.app:app --debug run --host=0.0.0.0 --port=5003"
