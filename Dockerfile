@@ -7,6 +7,7 @@ RUN apk add py3-srht
 ADD core.sr.ht /src/core.sr.ht/
 ENV SRHT_PATH=/src/core.sr.ht/srht
 ENV PYTHONPATH=/src/core.sr.ht
+ENV PATH="${PATH}:/src/core.sr.ht"
 
 FROM sr.ht as sr.ht-build
 RUN apk add go make sassc minify
