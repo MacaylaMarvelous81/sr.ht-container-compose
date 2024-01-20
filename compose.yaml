@@ -161,5 +161,5 @@ services:
         - path: git.sr.ht # TODO: narrow down scope
           action: rebuild
     ports:
-      - "5922:22"
+      - "5901:22"
     command: /usr/sbin/sshd -D -e
