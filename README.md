@@ -17,6 +17,7 @@ A default admin "root" is created, with password "root".
 The following services are included:
 
 - meta.sr.ht: web frontend at http://127.0.0.1:5000
-- todo.sr.ht: web frontend at http://127.0.0.1:5003
+- todo.sr.ht: web frontend at http://127.0.0.1:5003,
+  SMTP server at 127.0.0.1:5903 accepting mails for @todo
 - git.sr.ht: web frontend at http://127.0.0.1:5001,
   SSH access at ssh://git@127.0.0.1:5901

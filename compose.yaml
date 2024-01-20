@@ -102,6 +102,23 @@ services:
     ports:
       - "5003:5003"
     command: flask --app todosrht.app:app --debug run --host=0.0.0.0 --port=5003
+  todo-smtp:
+    <<: *srht-service
+    build:
+      target: todo.sr.ht
+    develop:
+      watch:
+        - path: todo.sr.ht/todosrht-lmtp
+          action: rebuild
+        - path: todo.sr.ht/todosrht
+          action: rebuild
+    depends_on:
+      - redis
+      - postgres
+      - todo-api
+    ports:
+      - "5903:5903"
+    command: /src/todo.sr.ht/todosrht-lmtp
   git-api:
     <<: *srht-service
     build:
