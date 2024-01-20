@@ -101,10 +101,7 @@ services:
       - meta
     ports:
       - "5003:5003"
-    # TODO: todo needs to communicate with meta's OAuth server, socat is a workaround
-    command: sh -c "
-      socat -d TCP4-LISTEN:5000,fork TCP4:meta:5000,forever &
-      flask --app todosrht.app:app --debug run --host=0.0.0.0 --port=5003"
+    command: flask --app todosrht.app:app --debug run --host=0.0.0.0 --port=5003
   git-api:
     <<: *srht-service
     build:
@@ -144,10 +141,7 @@ services:
       - meta
     ports:
       - "5001:5001"
-    # TODO: git needs to communicate with meta's OAuth server, socat is a workaround
-    command: sh -c "
-      socat -d TCP4-LISTEN:5000,fork TCP4:meta:5000,forever &
-      flask --app gitsrht.app:app --debug run --host=0.0.0.0 --port=5001"
+    command: flask --app gitsrht.app:app --debug run --host=0.0.0.0 --port=5001
   git-ssh:
     build:
       target: git.sr.ht
@@ -168,7 +162,4 @@ services:
           action: rebuild
     ports:
       - "5922:22"
-    # TODO: gitsrht-keys needs to communicate with meta, socat is a workaround
-    command: sh -c "
-      socat -d TCP4-LISTEN:5000,fork TCP4:meta:5000,forever &
-      /usr/sbin/sshd -D -e"
+    command: /usr/sbin/sshd -D -e
