@@ -53,7 +53,7 @@ services:
       - redis
       - postgres
     ports:
-      - "5100:5100"
+      - "127.0.0.1:5100:5100"
     command: /src/meta.sr.ht/api/api
   meta:
     <<: *srht-service
@@ -69,7 +69,7 @@ services:
       - postgres
       - meta-api
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
     command: flask --app metasrht.app:app --debug run --host=0.0.0.0 --port=5000
   todo-api:
     <<: *srht-service
@@ -83,7 +83,7 @@ services:
         - path: todo.sr.ht/api
           action: rebuild
     ports:
-      - "5103:5103"
+      - "127.0.0.1:5103:5103"
     command: /src/todo.sr.ht/api/api
   todo:
     <<: *srht-service
@@ -100,7 +100,7 @@ services:
       - todo-api
       - meta
     ports:
-      - "5003:5003"
+      - "127.0.0.1:5003:5003"
     command: flask --app todosrht.app:app --debug run --host=0.0.0.0 --port=5003
   todo-smtp:
     <<: *srht-service
@@ -117,7 +117,7 @@ services:
       - postgres
       - todo-api
     ports:
-      - "5903:5903"
+      - "127.0.0.1:5903:5903"
     command: /src/todo.sr.ht/todosrht-lmtp
   git-api:
     <<: *srht-service
@@ -134,7 +134,7 @@ services:
         - path: git.sr.ht/api
           action: rebuild
     ports:
-      - "5101:5101"
+      - "127.0.0.1:5101:5101"
     command: /src/git.sr.ht/api/api
   git:
     <<: *srht-service
@@ -157,7 +157,7 @@ services:
       - git-api
       - meta
     ports:
-      - "5001:5001"
+      - "127.0.0.1:5001:5001"
     command: flask --app gitsrht.app:app --debug run --host=0.0.0.0 --port=5001
   git-ssh:
     build:
@@ -178,5 +178,5 @@ services:
         - path: git.sr.ht # TODO: narrow down scope
           action: rebuild
     ports:
-      - "5901:22"
+      - "127.0.0.1:5901:22"
     command: /usr/sbin/sshd -D -e
