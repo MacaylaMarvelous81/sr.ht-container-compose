@@ -1,4 +1,4 @@
-# sr.ht-containers
+# sr.ht-container-compose
 
 The first time sr.ht-containers is used, sr.ht sources need to be cloned
 locally:
