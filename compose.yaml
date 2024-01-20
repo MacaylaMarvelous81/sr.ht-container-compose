@@ -1,24 +1,31 @@
 x-sr.ht-service: &srht-service
   configs:
-    - source: sr.ht-config
+    - source: main
       target: /etc/sr.ht/config.ini
-    - source: sr.ht-pgp-pubkey
+    - source: pgp-pubkey
       target: /etc/sr.ht/pgp/pubkey.asc
-    - source: sr.ht-pgp-privkey
+    - source: pgp-privkey
       target: /etc/sr.ht/pgp/privkey.asc
 
 name: srht
 
 configs:
-  sr.ht-config:
+  main:
     file: config.ini
-  sr.ht-pgp-pubkey:
+  pgp-pubkey:
     file: pgp/pubkey.asc
-  sr.ht-pgp-privkey:
+  pgp-privkey:
     file: pgp/privkey.asc
+  git-sshd:
+    file: git-sshd/sshd_config
+  git-sshd-pubkey:
+    file: git-sshd/ssh_host_rsa_key.pub
+  git-sshd-privkey:
+    file: git-sshd/ssh_host_rsa_key
 
 volumes:
   postgres-data:
+  git-repos:
 
 services:
   redis:
@@ -33,6 +40,7 @@ services:
       - "./init-postgres.sh:/docker-entrypoint-initdb.d/init.sh"
       - "./meta.sr.ht/schema.sql:/data/meta.sr.ht.sql"
       - "./todo.sr.ht/schema.sql:/data/todo.sr.ht.sql"
+      - "./git.sr.ht/schema.sql:/data/git.sr.ht.sql"
   meta-api:
     <<: *srht-service
     build:
@@ -97,3 +105,70 @@ services:
     command: sh -c "
       socat -d TCP4-LISTEN:5000,fork TCP4:meta:5000,forever &
       flask --app todosrht.app:app --debug run --host=0.0.0.0 --port=5003"
+  git-api:
+    <<: *srht-service
+    build:
+      target: git.sr.ht
+    user: git
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - "git-repos:/var/lib/git"
+    develop:
+      watch:
+        - path: git.sr.ht/api
+          action: rebuild
+    ports:
+      - "5101:5101"
+    command: /src/git.sr.ht/api/api
+  git:
+    <<: *srht-service
+    build:
+      target: git.sr.ht
+    user: git
+    volumes:
+      - "git-repos:/var/lib/git"
+    develop:
+      watch:
+        - path: git.sr.ht/gitsrht
+          action: sync
+          target: /src/git.sr.ht/gitsrht
+        - path: scm.sr.ht/scmsrht
+          action: sync
+          target: /src/scm.sr.ht/scmsrht
+    depends_on:
+      - redis
+      - postgres
+      - git-api
+      - meta
+    ports:
+      - "5001:5001"
+    # TODO: git needs to communicate with meta's OAuth server, socat is a workaround
+    command: sh -c "
+      socat -d TCP4-LISTEN:5000,fork TCP4:meta:5000,forever &
+      flask --app gitsrht.app:app --debug run --host=0.0.0.0 --port=5001"
+  git-ssh:
+    build:
+      target: git.sr.ht
+    volumes:
+      - "git-repos:/var/lib/git"
+    configs:
+      - source: main
+        target: /etc/sr.ht/config.ini
+      - source: git-sshd
+        target: /etc/ssh/sshd_config
+      - source: git-sshd-pubkey
+        target: /etc/ssh/ssh_host_rsa_key.pub
+      - source: git-sshd-privkey
+        target: /etc/ssh/ssh_host_rsa_key
+    develop:
+      watch:
+        - path: git.sr.ht # TODO: narrow down scope
+          action: rebuild
+    ports:
+      - "5922:22"
+    # TODO: gitsrht-keys needs to communicate with meta, socat is a workaround
+    command: sh -c "
+      socat -d TCP4-LISTEN:5000,fork TCP4:meta:5000,forever &
+      /usr/sbin/sshd -D -e"

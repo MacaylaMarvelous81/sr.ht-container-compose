@@ -14,8 +14,12 @@ psql -d meta.sr.ht <<EOF
 INSERT INTO "user" (id, created, updated, username, password, email, user_type)
 VALUES (1, NOW(), NOW(), 'root', '$password', 'root@localhost', 'admin');
 INSERT INTO oauthclient (created, updated, user_id, client_name, client_id, client_secret_hash, client_secret_partial, redirect_uri, preauthorized)
-VALUES (NOW(), NOW(), 1, 'todo.sr.ht', 'todo', '$client_secret', '3387e161', 'http://127.0.0.1:5003/oauth/callback', TRUE);
+VALUES (NOW(), NOW(), 1, 'todo.sr.ht', 'todo', '$client_secret', '3387e161', 'http://127.0.0.1:5003/oauth/callback', TRUE),
+	(NOW(), NOW(), 1, 'git.sr.ht', 'git', '$client_secret', '3387e161', 'http://127.0.0.1:5001/oauth/callback', TRUE);
 EOF
 
 createdb todo.sr.ht
 psql -d todo.sr.ht </data/todo.sr.ht.sql
+
+createdb git.sr.ht
+psql -d git.sr.ht </data/git.sr.ht.sql
