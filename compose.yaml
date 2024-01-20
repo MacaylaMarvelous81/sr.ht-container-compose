@@ -90,6 +90,7 @@ services:
       - redis
       - postgres
       - todo-api
+      - meta
     ports:
       - "5003:5003"
     # TODO: todo needs to communicate with meta's OAuth server, socat is a workaround
