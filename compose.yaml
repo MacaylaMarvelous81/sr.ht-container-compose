@@ -7,6 +7,8 @@ x-sr.ht-service: &srht-service
     - source: sr.ht-pgp-privkey
       target: /etc/sr.ht/pgp/privkey.asc
 
+name: srht
+
 configs:
   sr.ht-config:
     file: config.ini
