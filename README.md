@@ -12,7 +12,8 @@ Then sr.ht can be built and started:
 Any changes to the sr.ht sources will rebuild and reload sr.ht containers as
 needed.
 
-A default admin "root" is created, with password "root".
+A default admin "root" is created, with password "root" and a personal access
+token. A configuration file for [hut] is available in `hut-config`.
 
 The following services are included:
 
@@ -21,3 +22,5 @@ The following services are included:
   SMTP server at 127.0.0.1:5903 accepting mails for @todo
 - git.sr.ht: web frontend at http://127.0.0.1:5001,
   SSH access at ssh://git@127.0.0.1:5901
+
+[hut]: https://sr.ht/~emersion/hut/
