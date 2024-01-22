@@ -23,4 +23,9 @@ The following services are included:
 - git.sr.ht: web frontend at http://127.0.0.1:5001,
   SSH access at ssh://git@127.0.0.1:5901
 
+By default, all services are started. To only start a subset, specify services
+of interest as arguments, for instance:
+
+    docker compose up --attach-dependencies todo
+
 [hut]: https://sr.ht/~emersion/hut/
