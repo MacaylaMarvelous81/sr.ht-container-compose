@@ -1,4 +1,4 @@
-x-sr.ht-service: &srht-service
+x-srht-service: &srht-service
   configs:
     - source: main
       target: /etc/sr.ht/config.ini
@@ -44,7 +44,7 @@ services:
   meta-api:
     <<: *srht-service
     build:
-      target: meta.sr.ht
+      target: srht-meta
     develop:
       watch:
         - path: meta.sr.ht/api
@@ -58,7 +58,7 @@ services:
   meta:
     <<: *srht-service
     build:
-      target: meta.sr.ht
+      target: srht-meta
     develop:
       watch:
         - path: meta.sr.ht/metasrht
@@ -74,7 +74,7 @@ services:
   todo-api:
     <<: *srht-service
     build:
-      target: todo.sr.ht
+      target: srht-todo
     depends_on:
       - redis
       - postgres
@@ -88,7 +88,7 @@ services:
   todo:
     <<: *srht-service
     build:
-      target: todo.sr.ht
+      target: srht-todo
     develop:
       watch:
         - path: todo.sr.ht/todosrht
@@ -105,7 +105,7 @@ services:
   todo-smtp:
     <<: *srht-service
     build:
-      target: todo.sr.ht
+      target: srht-todo
     develop:
       watch:
         - path: todo.sr.ht/todosrht-lmtp
@@ -122,7 +122,7 @@ services:
   git-api:
     <<: *srht-service
     build:
-      target: git.sr.ht
+      target: srht-git
     user: git
     depends_on:
       - redis
@@ -139,7 +139,7 @@ services:
   git:
     <<: *srht-service
     build:
-      target: git.sr.ht
+      target: srht-git
     user: git
     volumes:
       - "git-repos:/var/lib/git"
@@ -161,7 +161,7 @@ services:
     command: flask --app gitsrht.app:app --debug run --host=0.0.0.0 --port=5001
   git-ssh:
     build:
-      target: git.sr.ht
+      target: srht-git
     volumes:
       - "git-repos:/var/lib/git"
     configs:
