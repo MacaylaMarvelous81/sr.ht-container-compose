@@ -25,6 +25,7 @@ configs:
 
 volumes:
   postgres-data:
+  minio-data:
   git-repos:
 
 services:
@@ -41,6 +42,14 @@ services:
       - "./meta.sr.ht/schema.sql:/data/meta.sr.ht.sql"
       - "./todo.sr.ht/schema.sql:/data/todo.sr.ht.sql"
       - "./git.sr.ht/schema.sql:/data/git.sr.ht.sql"
+  minio:
+    image: "quay.io/minio/minio"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: jIPk1RZ8gdhQwnUL4YtrOAXsFpHvb4Mw8hEwfLq
+    volumes:
+      - "minio-data:/data"
+    command: server /data
   meta-api:
     <<: *srht-service
     build:
@@ -127,6 +136,7 @@ services:
     depends_on:
       - redis
       - postgres
+      - minio
     volumes:
       - "git-repos:/var/lib/git"
     develop:
@@ -154,6 +164,7 @@ services:
     depends_on:
       - redis
       - postgres
+      - minio
       - git-api
       - meta
     ports:
