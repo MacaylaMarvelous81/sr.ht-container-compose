@@ -25,6 +25,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 
 FROM srht-core-build as srht-git-build
 ADD git.sr.ht /src/git.sr.ht/
+ADD scm.sr.ht /src/scm.sr.ht/
 RUN --mount=type=cache,target=/root/.cache/go-build \
 	--mount=type=cache,target=/root/go/pkg/mod \
 	cd /src/git.sr.ht && make
