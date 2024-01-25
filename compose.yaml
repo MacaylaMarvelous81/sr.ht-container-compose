@@ -50,7 +50,9 @@ services:
       MINIO_ROOT_PASSWORD: jIPk1RZ8gdhQwnUL4YtrOAXsFpHvb4Mw8hEwfLq
     volumes:
       - "minio-data:/data"
-    command: server /data
+    ports:
+      - "127.0.0.1:9001:9001"
+    command: server --console-address ":9001" /data
   meta-api:
     <<: *srht-service
     build:
