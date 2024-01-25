@@ -5,3 +5,4 @@ init:
 	[ -e todo.sr.ht ] || git clone https://git.sr.ht/~sircmpwn/todo.sr.ht
 	[ -e scm.sr.ht ] || git clone https://git.sr.ht/~sircmpwn/scm.sr.ht
 	[ -e git.sr.ht ] || git clone https://git.sr.ht/~sircmpwn/git.sr.ht
+	[ -e paste.sr.ht ] || git clone https://git.sr.ht/~sircmpwn/paste.sr.ht

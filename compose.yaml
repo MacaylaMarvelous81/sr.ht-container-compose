@@ -42,6 +42,7 @@ services:
       - "./meta.sr.ht/schema.sql:/data/meta.sr.ht.sql"
       - "./todo.sr.ht/schema.sql:/data/todo.sr.ht.sql"
       - "./git.sr.ht/schema.sql:/data/git.sr.ht.sql"
+      - "./paste.sr.ht/schema.sql:/data/paste.sr.ht.sql"
   minio:
     image: "quay.io/minio/minio"
     environment:
@@ -191,3 +192,34 @@ services:
     ports:
       - "127.0.0.1:5901:22"
     command: /usr/sbin/sshd -D -e
+  paste-api:
+    <<: *srht-service
+    build:
+      target: srht-paste
+    depends_on:
+      - redis
+      - postgres
+    develop:
+      watch:
+        - path: paste.sr.ht/api
+          action: rebuild
+    ports:
+      - "127.0.0.1:5111:5111"
+    command: /src/paste.sr.ht/api/api
+  paste:
+    <<: *srht-service
+    build:
+      target: srht-paste
+    develop:
+      watch:
+        - path: paste.sr.ht/pastesrht
+          action: sync
+          target: /src/paste.sr.ht/pastesrht
+    depends_on:
+      - redis
+      - postgres
+      - paste-api
+      - meta
+    ports:
+      - "127.0.0.1:5011:5011"
+    command: flask --app pastesrht.app:app --debug run --host=0.0.0.0 --port=5011

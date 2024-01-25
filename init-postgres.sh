@@ -25,7 +25,9 @@ VALUES
 	(NOW(), NOW(), 1, 'todo.sr.ht', 'todo', '$client_secret', '3387e161',
 		'http://127.0.0.1:5003/oauth/callback', TRUE),
 	(NOW(), NOW(), 1, 'git.sr.ht', 'git', '$client_secret', '3387e161',
-		'http://127.0.0.1:5001/oauth/callback', TRUE);
+		'http://127.0.0.1:5001/oauth/callback', TRUE),
+	(NOW(), NOW(), 1, 'paste.sr.ht', 'paste', '$client_secret', '3387e161',
+		'http://127.0.0.1:5011/oauth/callback', TRUE);
 EOF
 
 createdb todo.sr.ht
@@ -33,3 +35,6 @@ psql -d todo.sr.ht </data/todo.sr.ht.sql
 
 createdb git.sr.ht
 psql -d git.sr.ht </data/git.sr.ht.sql
+
+createdb paste.sr.ht
+psql -d paste.sr.ht </data/paste.sr.ht.sql
