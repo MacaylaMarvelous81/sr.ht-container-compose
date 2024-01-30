@@ -1,15 +1,19 @@
 FROM docker.io/alpine:3.17 as srht-core
-RUN apk -U add curl
+RUN mkdir -p /var/cache/apk && ln -s /var/cache/apk /etc/apk/cache
+RUN --mount=type=cache,target=/var/cache/apk \
+	apk -U add curl
 RUN echo "https://mirror.sr.ht/alpine/v3.17/sr.ht" >>/etc/apk/repositories
 RUN curl -o /etc/apk/keys/alpine@sr.ht.rsa.pub 'https://mirror.sr.ht/alpine/alpine%40sr.ht.rsa.pub'
-RUN apk -U add py3-srht
+RUN --mount=type=cache,target=/var/cache/apk \
+	apk -U add py3-srht
 ADD core.sr.ht /src/core.sr.ht/
 ENV SRHT_PATH=/src/core.sr.ht/srht
 ENV PYTHONPATH=/src/core.sr.ht
 ENV PATH="${PATH}:/src/core.sr.ht"
 
 FROM srht-core as srht-core-build
-RUN apk -U add go make sassc minify
+RUN --mount=type=cache,target=/var/cache/apk \
+	apk -U add go make sassc minify
 
 FROM srht-core-build as srht-meta-build
 ADD meta.sr.ht /src/meta.sr.ht/
@@ -37,19 +41,22 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 	cd /src/paste.sr.ht && make
 
 FROM srht-core as srht-meta
-RUN apk -U add meta.sr.ht
+RUN --mount=type=cache,target=/var/cache/apk \
+	apk -U add meta.sr.ht
 COPY --from=srht-meta-build /src/meta.sr.ht /src/meta.sr.ht
 ENV PYTHONPATH="${PYTHONPATH}:/src/meta.sr.ht"
 ENV PATH="${PATH}:/src/meta.sr.ht"
 
 FROM srht-core as srht-todo
-RUN apk -U add todo.sr.ht
+RUN --mount=type=cache,target=/var/cache/apk \
+	apk -U add todo.sr.ht
 COPY --from=srht-todo-build /src/todo.sr.ht /src/todo.sr.ht
 ENV PYTHONPATH="${PYTHONPATH}:/src/todo.sr.ht"
 ENV PATH="${PATH}:/src/todo.sr.ht"
 
 FROM srht-core as srht-git
-RUN apk -U add git.sr.ht openssh
+RUN --mount=type=cache,target=/var/cache/apk \
+	apk -U add git.sr.ht openssh
 ADD scm.sr.ht /src/scm.sr.ht/
 COPY --from=srht-git-build /src/git.sr.ht /src/git.sr.ht
 RUN passwd -u git # Unlock account to allow SSH login
@@ -57,7 +64,8 @@ ENV PYTHONPATH="${PYTHONPATH}:/src/scm.sr.ht:/src/git.sr.ht"
 ENV PATH="${PATH}:/src/git.sr.ht"
 
 FROM srht-core as srht-paste
-RUN apk -U add paste.sr.ht
+RUN --mount=type=cache,target=/var/cache/apk \
+	apk -U add paste.sr.ht
 COPY --from=srht-paste-build /src/paste.sr.ht /src/paste.sr.ht
 ENV PYTHONPATH="${PYTHONPATH}:/src/paste.sr.ht"
 ENV PATH="${PATH}:/src/paste.sr.ht"
