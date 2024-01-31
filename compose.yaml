@@ -18,10 +18,14 @@ configs:
     file: pgp/privkey.asc
   git-sshd:
     file: git-sshd/sshd_config
-  git-sshd-pubkey:
+  git-sshd-rsa-pubkey:
     file: git-sshd/ssh_host_rsa_key.pub
-  git-sshd-privkey:
+  git-sshd-rsa-privkey:
     file: git-sshd/ssh_host_rsa_key
+  git-sshd-ed25519-pubkey:
+    file: git-sshd/ssh_host_ed25519_key.pub
+  git-sshd-ed25519-privkey:
+    file: git-sshd/ssh_host_ed25519_key
 
 volumes:
   postgres-data:
@@ -183,10 +187,14 @@ services:
         target: /etc/sr.ht/config.ini
       - source: git-sshd
         target: /etc/ssh/sshd_config
-      - source: git-sshd-pubkey
+      - source: git-sshd-rsa-pubkey
         target: /etc/ssh/ssh_host_rsa_key.pub
-      - source: git-sshd-privkey
+      - source: git-sshd-rsa-privkey
         target: /etc/ssh/ssh_host_rsa_key
+      - source: git-sshd-ed25519-pubkey
+        target: /etc/ssh/ssh_host_ed25519_key.pub
+      - source: git-sshd-ed25519-privkey
+        target: /etc/ssh/ssh_host_ed25519_key
     develop:
       watch:
         - path: git.sr.ht # TODO: narrow down scope

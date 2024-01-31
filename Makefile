@@ -18,3 +18,5 @@ pull:
 
 git-sshd/ssh_host_rsa_key:
 	ssh-keygen -f git-sshd/ssh_host_rsa_key -N '' -C 'git-ssh' -t rsa -b 4096
+git-sshd/ssh_host_ed25519_key:
+	ssh-keygen -f git-sshd/ssh_host_ed25519_key -N '' -C 'git-ssh' -t ed25519
