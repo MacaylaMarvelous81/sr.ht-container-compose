@@ -6,6 +6,8 @@ init:
 	@
 	for repo in ${repos}; do
 		[ -e $$repo ] || git clone --recurse-submodules https://git.sr.ht/~sircmpwn/$$repo
+		git -C $$repo config sendemail.to '~sircmpwn/sr.ht-dev@lists.sr.ht'
+		git -C $$repo config format.subjectPrefix "PATCH $$repo"
 	done
 
 .PRONY: pull
