@@ -34,6 +34,12 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 	--mount=type=cache,target=/root/go/pkg/mod \
 	cd /src/git.sr.ht && make
 
+FROM srht-core-build as srht-man-build
+ADD man.sr.ht /src/man.sr.ht/
+RUN --mount=type=cache,target=/root/.cache/go-build \
+	--mount=type=cache,target=/root/go/pkg/mod \
+	cd /src/man.sr.ht && make
+
 FROM srht-core-build as srht-paste-build
 ADD paste.sr.ht /src/paste.sr.ht/
 RUN --mount=type=cache,target=/root/.cache/go-build \
@@ -62,6 +68,13 @@ COPY --from=srht-git-build /src/git.sr.ht /src/git.sr.ht
 RUN passwd -u git # Unlock account to allow SSH login
 ENV PYTHONPATH="${PYTHONPATH}:/src/scm.sr.ht:/src/git.sr.ht"
 ENV PATH="${PATH}:/src/git.sr.ht"
+
+FROM srht-core as srht-man
+RUN --mount=type=cache,target=/var/cache/apk \
+	apk -U add man.sr.ht
+COPY --from=srht-man-build /src/man.sr.ht /src/man.sr.ht
+ENV PYTHONPATH="${PYTHONPATH}:/src/man.sr.ht"
+ENV PATH="${PATH}:/src/man.sr.ht"
 
 FROM srht-core as srht-paste
 RUN --mount=type=cache,target=/var/cache/apk \

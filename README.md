@@ -22,6 +22,7 @@ The following services are included:
   SMTP server at 127.0.0.1:5903 accepting mails for @todo
 - git.sr.ht: web frontend at http://127.0.0.1:5001,
   SSH access at ssh://git@127.0.0.1:5901
+- man.sr.ht: web frontend at http://127.0.0.1:5004
 - paste.sr.ht: web frontend at http://127.0.0.1:5011
 - minio: web frontend at http://127.0.0.1:9001,
   username: minio, password: jIPk1RZ8gdhQwnUL4YtrOAXsFpHvb4Mw8hEwfLq

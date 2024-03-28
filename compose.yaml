@@ -46,6 +46,7 @@ services:
       - "./meta.sr.ht/schema.sql:/data/meta.sr.ht.sql"
       - "./todo.sr.ht/schema.sql:/data/todo.sr.ht.sql"
       - "./git.sr.ht/schema.sql:/data/git.sr.ht.sql"
+      - "./man.sr.ht/schema.sql:/data/man.sr.ht.sql"
       - "./paste.sr.ht/schema.sql:/data/paste.sr.ht.sql"
   minio:
     image: "quay.io/minio/minio"
@@ -202,6 +203,38 @@ services:
     ports:
       - "127.0.0.1:5901:22"
     command: /usr/sbin/sshd -D -e
+  man-api:
+    <<: *srht-service
+    build:
+      target: srht-man
+    depends_on:
+      - redis
+      - postgres
+      - git
+    develop:
+      watch:
+        - path: man.sr.ht/api
+          action: rebuild
+    ports:
+      - "127.0.0.1:5104:5104"
+    command: /src/man.sr.ht/api/api
+  man:
+    <<: *srht-service
+    build:
+      target: srht-man
+    develop:
+      watch:
+        - path: man.sr.ht/mansrht
+          action: sync
+          target: /src/man.sr.ht/mansrht
+    depends_on:
+      - redis
+      - postgres
+      - man-api
+      - meta
+    ports:
+      "127.0.0.1:5004:5004"
+    command: flask --app mansrht.app:app --debug run --host=0.0.0.0 --port=5004
   paste-api:
     <<: *srht-service
     build:
