@@ -233,7 +233,7 @@ services:
       - man-api
       - meta
     ports:
-      "127.0.0.1:5004:5004"
+      - "127.0.0.1:5004:5004"
     command: flask --app mansrht.app:app --debug run --host=0.0.0.0 --port=5004
   paste-api:
     <<: *srht-service
