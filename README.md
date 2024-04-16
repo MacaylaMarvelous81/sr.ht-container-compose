@@ -32,4 +32,8 @@ of interest as arguments, for instance:
 
     docker compose up --attach-dependencies todo
 
+To pull changes from all repositories:
+
+    make pull
+
 [hut]: https://sr.ht/~emersion/hut/
